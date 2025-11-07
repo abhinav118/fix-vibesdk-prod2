@@ -205,7 +205,10 @@ export class CodingAgentController extends BaseController {
             }
 
             this.logger.info(`WebSocket connection request for chat: ${chatId}`);
-            
+
+            // Parse request URL for hostname/port
+            const url = new URL(request.url);
+
             // Log request details for debugging
             const headers: Record<string, string> = {};
             request.headers.forEach((value, key) => {
@@ -220,8 +223,35 @@ export class CodingAgentController extends BaseController {
             try {
                 // Get the agent instance to handle the WebSocket connection
                 const agentInstance = await getAgentStub(env, chatId);
-                
+
                 this.logger.info(`Successfully got agent instance for chat: ${chatId}`);
+
+                // Check if agent is initialized before allowing WebSocket connection
+                let isInitialized = await agentInstance.isInitialized();
+                if (!isInitialized) {
+                    this.logger.warn(`Agent ${chatId} not initialized, attempting auto-initialization for reconnection...`);
+
+                    // For reconnection, we don't auto-initialize - just check if agent exists
+                    // If agent is not initialized, it means the session is stale
+                    const initError = new Error('Agent session expired. Please refresh the page to start a new session.');
+                    {
+                        this.logger.error(`Failed to auto-initialize agent ${chatId}:`, initError);
+
+                        // Return WebSocket error for failed initialization
+                        const { 0: client, 1: server } = new WebSocketPair();
+                        server.accept();
+                        server.send(JSON.stringify({
+                            type: WebSocketMessageResponses.ERROR,
+                            error: `Failed to initialize agent session: ${initError instanceof Error ? initError.message : 'Unknown error'}`
+                        }));
+                        server.close(1011, 'Agent not initialized');
+
+                        return new Response(null, {
+                            status: 101,
+                            webSocket: client
+                        });
+                    }
+                }
 
                 // Let the agent handle the WebSocket connection directly
                 return agentInstance.fetch(request);
@@ -333,6 +363,76 @@ export class CodingAgentController extends BaseController {
             this.logger.error('Error deploying preview', error);
             const appError = CodingAgentController.handleError(error, 'deploy preview') as ControllerResponse<ApiResponse<AgentPreviewResponse>>;
             return appError;
+        }
+    }
+
+    /**
+     * Undo changes by resetting to a previous git commit
+     * Called when user clicks undo button in chat interface
+     */
+    static async undoChanges(
+        request: Request,
+        env: Env,
+        _: ExecutionContext,
+        context: RouteContext
+    ): Promise<ControllerResponse<ApiResponse<{ commitId: string; filesReset: number; message: string }>>> {
+        try {
+            const agentId = context.pathParams.agentId;
+            if (!agentId) {
+                return CodingAgentController.createErrorResponse<{ commitId: string; filesReset: number; message: string }>(
+                    'Missing agent ID parameter',
+                    400
+                );
+            }
+
+            let targetCommitId: string;
+            try {
+                const body = await request.json();
+                targetCommitId = body.targetCommitId;
+            } catch (error) {
+                return CodingAgentController.createErrorResponse<{ commitId: string; filesReset: number; message: string }>(
+                    'Invalid JSON in request body',
+                    400
+                );
+            }
+
+            if (!targetCommitId) {
+                return CodingAgentController.createErrorResponse<{ commitId: string; filesReset: number; message: string }>(
+                    'Target commit ID is required',
+                    400
+                );
+            }
+
+            this.logger.info(`Undo request for agent ${agentId} to commit ${targetCommitId.substring(0, 7)}`);
+
+            try {
+                // Get the agent instance
+                const agentInstance = await getAgentStub(env, agentId);
+
+                // Execute git reset via the agent
+                const result = await agentInstance.resetToCommit(targetCommitId);
+
+                this.logger.info('Undo completed successfully', {
+                    agentId,
+                    commitId: targetCommitId,
+                    filesReset: result.filesReset
+                });
+
+                return CodingAgentController.createSuccessResponse({
+                    commitId: targetCommitId,
+                    filesReset: result.filesReset,
+                    message: `Successfully reset to commit ${targetCommitId.substring(0, 7)}`
+                });
+            } catch (error) {
+                this.logger.error('Failed to execute undo', { agentId, error });
+                return CodingAgentController.createErrorResponse<{ commitId: string; filesReset: number; message: string }>(
+                    `Undo failed: ${error instanceof Error ? error.message : String(error)}`,
+                    500
+                );
+            }
+        } catch (error) {
+            this.logger.error('Error handling undo request', error);
+            return CodingAgentController.handleError(error, 'undo changes') as ControllerResponse<ApiResponse<{ commitId: string; filesReset: number; message: string }>>;
         }
     }
 }

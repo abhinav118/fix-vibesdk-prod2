@@ -61,25 +61,21 @@
 			"image": "./SandboxDockerfile",
             // "image": "registry.cloudflare.com/vibesdk-production-userappsandboxservice:cfe197fc",
             // Altering max_instances value will have no effect. Please use the MAX_SANDBOX_INSTANCES var instead.
-			"max_instances": 1400,
+			"max_instances": 10,
             // ATTENTION: Altering instance_type value will have no effect. Please use the SANDBOX_INSTANCE_TYPE var instead.
-            "instance_type": {
-                "vcpu": 4,
-                "memory_mib": 8192,
-                "disk_mb": 10240
-            },
+            "instance_type": "standard-4",
             "rollout_step_percentage": 100
 		}
 	],
 	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "vibesdk-db",
-			"database_id": "8d179fb3-6d91-42c0-9e9c-c55e0669b77b",
-			"migrations_dir": "migrations",
-			"remote": true
-		}
-	],
+        {
+            "binding": "DB",
+            "database_name": "vibesdk-db",
+            "database_id": "8d179fb3-6d91-42c0-9e9c-c55e0669b77b",
+            "migrations_dir": "migrations",
+            "remote": true
+        }
+    ],
 	"durable_objects": {
 		"bindings": [
 			{
@@ -96,17 +92,26 @@
             }
 		]
 	},
+    // "r2_buckets": [
+    //     {
+    //         "binding": "TEMPLATES_BUCKET",
+    //         "bucket_name": "vibesdk-templates",
+    //         "remote": true,
+    //         "preview_bucket_name": "vibesdk-templates"
+    //     }
+    // ],
     "r2_buckets": [
       {
         "binding": "TEMPLATES_BUCKET",
-        "bucket_name": "vibesdk-templates",
-        "remote": true,"preview_bucket_name": "vibesdk-templates"
+        "bucket_name": "anex6-templates3",
+        "preview_bucket_name": "anex6-templates3",
+        "remote": true
       }
     ],
     "kv_namespaces": [
         {
             "binding": "VibecoderStore",
-            "id": "6c8f21044757425a8020c43b4e0a470a",
+            "id": "c590635fa4454c829ccae8d3a373d805",
             "remote": true
         }
     ],
@@ -130,13 +135,13 @@
 	],
 	"routes": [
         {
-            "pattern": "build.cloudflare.dev",
+            "pattern": "anex6site.com",
             "custom_domain": true
         },
         {
-            "pattern": "*build-preview.cloudflare.dev/*",
+            "pattern": "*anex6site.com/*",
             "custom_domain": false,
-            "zone_id": "db01fac4261b2604aacad8410443a3e2"
+            "zone_id": "a9fa4885d9674a7575bc5d401f91225e"
         }
     ],
 	"vars": {
@@ -145,9 +150,8 @@
         "DISPATCH_NAMESPACE": "vibesdk-default-namespace",
         "ENABLE_READ_REPLICAS": "true",
         "CLOUDFLARE_AI_GATEWAY": "vibesdk-gateway",
-        "CUSTOM_DOMAIN": "anex6site.com",
-        "MAX_SANDBOX_INSTANCES": "2",
-        "SANDBOX_INSTANCE_TYPE": "standard-2",
+        "MAX_SANDBOX_INSTANCES": "10",
+        "SANDBOX_INSTANCE_TYPE": "standard-4",
         "USE_CLOUDFLARE_IMAGES": "true"
     },
 	"workers_dev": false,

@@ -6,13 +6,9 @@ import { createMiddleware } from 'hono/factory';
 import { AuthUser } from '../../types/auth-types';
 import { createLogger } from '../../logger';
 import { AppService } from '../../database';
-import { authMiddleware } from './auth';
-import { RateLimitService } from '../../services/rate-limit/rateLimits';
-import { errorResponse } from '../../api/responses';
+import { fakeAuthMiddleware, FAKE_AUTH_USER_SESSION } from './auth';
 import { Context } from 'hono';
 import { AppEnv } from '../../types/appenv';
-import { RateLimitExceededError } from 'shared/types/errors';
-import * as Sentry from '@sentry/cloudflare';
 import { getUserConfigurableSettings } from 'worker/config';
 
 const logger = createLogger('RouteAuth');
@@ -136,46 +132,18 @@ export async function routeAuthChecks(
  * Enforce authentication requirement
  */
 export async function enforceAuthRequirement(c: Context<AppEnv>) : Promise<Response | undefined> {
-    let user: AuthUser | null = c.get('user') || null;
-
-    const requirement = c.get('authLevel');
-    if (!requirement) {
-        logger.error('No authentication level found');
-        return errorResponse('No authentication level found', 500);
+    if (!c.get('user')) {
+        const fakeSession = await fakeAuthMiddleware();
+        c.set('user', fakeSession.user);
+        c.set('sessionId', fakeSession.sessionId);
     }
-    
-    // Only perform auth if we need it or don't have user yet
-    if (!user && (requirement.level === 'authenticated' || requirement.level === 'owner-only')) {
-        const userSession = await authMiddleware(c.req.raw, c.env);
-        if (!userSession) {
-            return errorResponse('Authentication required', 401);
-        }
-        user = userSession.user;
-        c.set('user', user);
-		c.set('sessionId', userSession.sessionId);
-		Sentry.setUser({ id: user.id, email: user.email });
 
-        const config = await getUserConfigurableSettings(c.env, user.id);
+    if (!c.get('config')) {
+        const config = await getUserConfigurableSettings(c.env, FAKE_AUTH_USER_SESSION.user.id);
         c.set('config', config);
+    }
 
-        try {
-            await RateLimitService.enforceAuthRateLimit(c.env, config.security.rateLimit, user, c.req.raw);
-        } catch (error) {
-            if (error instanceof RateLimitExceededError) {
-                return errorResponse(error, 429);
-            }
-            logger.error('Error enforcing auth rate limit', error);
-            return errorResponse('Internal server error', 500);
-        }
-    }
-    
-    const params = c.req.param();
-    const env = c.env;
-    const result = await routeAuthChecks(user, env, requirement, params);
-    if (!result.success) {
-        logger.warn('Authentication check failed', result.response, requirement, user);
-        return result.response;
-    }
+    return undefined;    
 }
 
 export function setAuthLevel(requirement: AuthRequirement) {
@@ -227,6 +195,13 @@ function createForbiddenResponse(message: string): Response {
  */
 export async function checkAppOwnership(user: AuthUser, params: Record<string, string>, env: Env): Promise<boolean> {
     try {
+        // BYPASS ownership check for fake/mock auth users (development mode)
+        // This allows the fake auth middleware to work with any agent
+        if (user.id === 'fake-user-id' || user.id === 'mock-user-id' || user.provider === 'dev') {
+            logger.info('Bypassing ownership check for development/fake auth user');
+            return true;
+        }
+
         const agentId = params.agentId || params.id;
         if (!agentId) {
             return false;

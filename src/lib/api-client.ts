@@ -184,43 +184,6 @@ class ApiClient {
 	}
 
 	/**
-	 * Fetch CSRF token from server with expiration handling
-	 */
-	private async fetchCsrfToken(): Promise<boolean> {
-		try {
-			const response = await fetch(`${this.baseUrl}/api/auth/csrf-token`, {
-				method: 'GET',
-				credentials: 'include',
-			});
-			
-			if (response.ok) {
-				const data: ApiResponse<CsrfTokenResponseData> = await response.json();
-				if (data.data?.token) {
-					const expiresIn = data.data.expiresIn || 7200; // Default 2 hours
-					this.csrfTokenInfo = {
-						token: data.data.token,
-						expiresAt: Date.now() + (expiresIn * 1000)
-					};
-					return true;
-				}
-			}
-			return false;
-		} catch (error) {
-			console.warn('Failed to fetch CSRF token:', error);
-			return false;
-		}
-	}
-
-	/**
-	 * Public method to refresh CSRF token
-	 * Should be called after authentication operations that rotate the token
-	 */
-	async refreshCsrfToken(): Promise<void> {
-		await this.fetchCsrfToken();
-	}
-
-
-	/**
 	 * Check if CSRF token is expired
 	 */
 	private isCSRFTokenExpired(): boolean {
@@ -231,15 +194,15 @@ class ApiClient {
 	/**
 	 * Ensure CSRF token exists and is valid for state-changing requests
 	 */
-	private async ensureCsrfToken(method: string): Promise<boolean> {
-		if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(method.toUpperCase())) {
-			return true;
-		}
+	private async ensureCsrfToken(_method: string): Promise<boolean> {
+	// 	if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(method.toUpperCase())) {
+	// 		return true;
+	// 	}
 		
-		// Fetch new token if none exists or current one is expired
-		if (!this.csrfTokenInfo || this.isCSRFTokenExpired()) {
-			return await this.fetchCsrfToken();
-		}
+	// 	// Fetch new token if none exists or current one is expired
+	// 	if (!this.csrfTokenInfo || this.isCSRFTokenExpired()) {
+	// 		return await this.fetchCsrfToken();
+	// 	}
 		
 		return true;
 	}

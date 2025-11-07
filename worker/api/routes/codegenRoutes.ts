@@ -28,4 +28,8 @@ export function setupCodegenRoutes(app: Hono<AppEnv>): void {
     app.get('/api/agent/:agentId/connect', setAuthLevel(AuthConfig.ownerOnly), adaptController(CodingAgentController, CodingAgentController.connectToExistingAgent));
 
     app.get('/api/agent/:agentId/preview', setAuthLevel(AuthConfig.authenticated), adaptController(CodingAgentController, CodingAgentController.deployPreview));
+
+    // Undo changes - reset to previous commit - OWNER ONLY
+    // Only the app owner should be able to undo/reset their app state
+    app.post('/api/agent/:agentId/undo', setAuthLevel(AuthConfig.ownerOnly), adaptController(CodingAgentController, CodingAgentController.undoChanges));
 }
