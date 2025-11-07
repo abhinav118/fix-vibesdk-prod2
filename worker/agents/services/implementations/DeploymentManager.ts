@@ -266,7 +266,8 @@ export class DeploymentManager extends BaseAgentService implements IDeploymentMa
         const client = this.getClient();
 
         if (!sandboxInstanceId) {
-            throw new Error('No sandbox instance available for runtime error fetching');
+            logger.info('No sandbox instance available for runtime error fetching, returning empty array');
+            return [];
         }
 
         const resp = await client.getInstanceErrors(sandboxInstanceId, clear);

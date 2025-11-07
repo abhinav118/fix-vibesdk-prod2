@@ -352,6 +352,14 @@ type BlueprintUpdatedMessage = {
 	updatedKeys: string[];
 };
 
+type CommitCreatedMessage = {
+	type: 'commit_created';
+	commitId: string;
+	message: string;
+	userMessage?: string;
+	timestamp: string;
+};
+
 type DeterministicCodeFixStartedMessage = {
 	type: 'deterministic_code_fix_started';
 	message: string;
@@ -462,6 +470,7 @@ export type WebSocketMessage =
 	| ConversationClearedMessage
     | ProjectNameUpdatedMessage
     | BlueprintUpdatedMessage
+	| CommitCreatedMessage
     | DeterministicCodeFixStartedMessage
     | DeterministicCodeFixCompletedMessage
 	| ModelConfigsInfoMessage
