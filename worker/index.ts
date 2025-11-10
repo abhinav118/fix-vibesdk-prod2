@@ -154,7 +154,9 @@ const worker = {
 			
 			// Serve static assets for all non-API routes from the ASSETS binding.
 			if (!pathname.startsWith('/api/')) {
-				return env.ASSETS.fetch(request);
+				// return env.ASSETS.fetch(request);
+				    return new Response('return to anex6.com', { status: 404 });
+
 			}
 			// AI Gateway proxy for generated apps
 			if (pathname.startsWith('/api/proxy/openai')) {

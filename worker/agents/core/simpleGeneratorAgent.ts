@@ -179,13 +179,13 @@ export class SimpleCodeGeneratorAgent extends Agent<Env, CodeGenState> {
         this.fileManager = new FileManager(this.stateManager, () => this.getTemplateDetails(), this.git);
 
         // Set up commit callback to emit WebSocket messages
-        this.fileManager.setOnCommitCreatedCallback((commitId, message) => {
-            this.broadcastToConnections('commit_created', {
-                commitId,
-                message,
-                timestamp: new Date().toISOString()
-            });
-        });
+        // this.fileManager.setOnCommitCreatedCallback((commitId, message) => {
+        //     this.broadcastToConnections('commit_created', {
+        //         commitId,
+        //         message,
+        //         timestamp: new Date().toISOString()
+        //     });
+        // });
 
         // Initialize DeploymentManager first (manages sandbox client caching)
         // DeploymentManager will use its own getClient() override for caching

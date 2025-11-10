@@ -34,7 +34,7 @@ export interface CodeGenState {
     lastPackageJson?: string; // Last package.json file contents
     templateName: string;
     sandboxInstanceId?: string;
-    
+
     shouldBeGenerating: boolean; // Persistent flag indicating generation should be active
     mvpGenerated: boolean;
     reviewingInitiated: boolean;

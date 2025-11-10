@@ -48,12 +48,14 @@ export function getAllowedOrigins(env: Env): string[] {
          origins.push(`https://w12tdq-ip-99-231-28-51.tunnelmole.net`);
          origins.push(`https://anex6.com`);
          origins.push(`https://preview--glow-convert-sell-429.lovable.app`);
+         origins.push(`https://gc2ehn-ip-99-231-28-51.tunnelmole.net`);
     }
     
     // Development origins (only in development)
     if (isDev(env)) {
         origins.push('http://localhost:3000');
         origins.push('http://localhost:5173');
+        origins.push('http://localhost:5174');
         origins.push('http://localhost:8080'); // Frontend dev server
         origins.push('http://localhost:8787');
         origins.push('http://127.0.0.1:3000');

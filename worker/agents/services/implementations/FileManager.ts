@@ -12,7 +12,7 @@ import { GitVersionControl } from 'worker/agents/git';
  * Handles both template and generated files
  */
 export class FileManager implements IFileManager {
-    private onCommitCreatedCallback?: (commitId: string, message: string) => void;
+    // private onCommitCreatedCallback?: (commitId: string, message: string) => void;
 
     constructor(
         private stateManager: IStateManager,
@@ -29,9 +29,9 @@ export class FileManager implements IFileManager {
      * Set callback to be called when a commit is created
      * Used by agent to emit WebSocket messages
      */
-    setOnCommitCreatedCallback(callback: (commitId: string, message: string) => void): void {
-        this.onCommitCreatedCallback = callback;
-    }
+    // setOnCommitCreatedCallback(callback: (commitId: string, message: string) => void): void {
+    //     this.onCommitCreatedCallback = callback;
+    // }
 
     /**
      * Sync generatedFilesMap from git HEAD
@@ -143,14 +143,16 @@ export class FileManager implements IFileManager {
             if (shouldCommit) {
                 // If commit message is available, commit, else stage
                 if (commitMessage) {
-                    console.log(`[FileManager] Committing ${fileStates.length} files:`, commitMessage);
-                    const commitOid = await this.git.commit(fileStates, commitMessage);
-                    console.log(`[FileManager] Commit successful`, commitOid);
+                    await this.git.commit(fileStates, commitMessage);
+                    console.log(`[FileManager] Commit successful`);
+                    // console.log(`[FileManager] Committing ${fileStates.length} files:`, commitMessage);
+                    // const commitOid = await this.git.commit(fileStates, commitMessage);
+                    // console.log(`[FileManager] Commit successful`, commitOid);
 
-                    // Notify listeners (e.g., agent) that a commit was created
-                    if (commitOid && this.onCommitCreatedCallback) {
-                        this.onCommitCreatedCallback(commitOid, commitMessage);
-                    }
+                    // // Notify listeners (e.g., agent) that a commit was created
+                    // if (commitOid && this.onCommitCreatedCallback) {
+                    //     this.onCommitCreatedCallback(commitOid, commitMessage);
+                    // }
                 } else {
                     console.log(`[FileManager] Staging ${fileStates.length} files`);
                     await this.git.stage(fileStates);
