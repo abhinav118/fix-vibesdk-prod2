@@ -49,3 +49,6 @@ debug-tools/*.json
 .env.sentry-build-plugin
 data-dump
 debug-tools/extracted
+# TypeScript build info
+tsconfig.tsbuildinfo
+*.tsbuildinfo
