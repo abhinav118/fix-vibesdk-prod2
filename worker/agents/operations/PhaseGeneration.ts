@@ -202,16 +202,21 @@ export class PhaseGenerationOperation extends AgentOperation<PhaseGenerationInpu
                 : "";
             
             logger.info(`Generating next phase ${suggestionsInfo}${imagesInfo}`);
-    
+
             // Create user message with optional images
             const userPrompt = userPromptFormatter(issues, userContext?.suggestions, isUserSuggestedPhase);
-            const userMessage = userContext?.images && userContext.images.length > 0
-                ? createMultiModalUserMessage(
-                    userPrompt,
-                    await imagesToBase64(env, userContext?.images),
-                    'high'
-                )
-                : createUserMessage(userPrompt);
+            let userMessage;
+            if (userContext?.images && userContext.images.length > 0) {
+                const convertedImages = await imagesToBase64(env, userContext.images);
+                if (convertedImages.length === 0 && userContext.images.length > 0) {
+                    logger.warn(`All ${userContext.images.length} images failed to convert to base64, falling back to text-only message`);
+                } else if (convertedImages.length < userContext.images.length) {
+                    logger.warn(`${userContext.images.length - convertedImages.length} of ${userContext.images.length} images failed to convert to base64`);
+                }
+                userMessage = createMultiModalUserMessage(userPrompt, convertedImages, 'high');
+            } else {
+                userMessage = createUserMessage(userPrompt);
+            }
             
             const messages: Message[] = [
                 ...getSystemPromptWithProjectContext(SYSTEM_PROMPT, context),

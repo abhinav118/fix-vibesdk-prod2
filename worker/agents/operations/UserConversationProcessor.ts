@@ -344,16 +344,21 @@ export class UserConversationProcessor extends AgentOperation<UserConversationIn
 
         try {
             const systemPromptMessages = getSystemPromptWithProjectContext(SYSTEM_PROMPT, context, CodeSerializerType.SIMPLE);
-            
+
             // Create user message with optional images for inference
             const userPromptForInference = buildUserMessageWithContext(userMessage, errors, projectUpdates, true);
-            const userMessageForInference = images && images.length > 0
-                ? createMultiModalUserMessage(
-                    userPromptForInference,
-                    await imagesToBase64(env, images),
-                    'high'
-                )
-                : createUserMessage(userPromptForInference);
+            let userMessageForInference;
+            if (images && images.length > 0) {
+                const convertedImages = await imagesToBase64(env, images);
+                if (convertedImages.length === 0 && images.length > 0) {
+                    logger.warn(`All ${images.length} images failed to convert to base64, falling back to text-only message`);
+                } else if (convertedImages.length < images.length) {
+                    logger.warn(`${images.length - convertedImages.length} of ${images.length} images failed to convert to base64`);
+                }
+                userMessageForInference = createMultiModalUserMessage(userPromptForInference, convertedImages, 'high');
+            } else {
+                userMessageForInference = createUserMessage(userPromptForInference);
+            }
 
             let extractedUserResponse = "";
             

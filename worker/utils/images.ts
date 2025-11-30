@@ -121,19 +121,51 @@ export async function imageToBase64(env: Env, image: ProcessedImageAttachment): 
         if (!image.base64Data) {
             const r2Key = image.r2Key;
             if (!r2Key) {
+                console.error('[imageToBase64] No R2 key or base64 data provided for image:', {
+                    id: image.hash || 'unknown',
+                    publicUrl: image.publicUrl,
+                });
                 throw new Error('No R2 key provided for image');
             }
             image = await downloadR2Image(env, r2Key);
         }
+
+        // Validate that we have base64 data after download
+        if (!image.base64Data || image.base64Data.trim() === '') {
+            console.error('[imageToBase64] Downloaded image has empty base64 data:', {
+                r2Key: image.r2Key,
+                publicUrl: image.publicUrl,
+            });
+            return '';
+        }
+
         return `data:${image.mimeType};base64,${image.base64Data}`;
     } catch (error) {
-        console.error('Failed to convert image to base64:', error, image);
+        console.error('[imageToBase64] Failed to convert image to base64:', {
+            error: error instanceof Error ? error.message : String(error),
+            r2Key: image.r2Key,
+            publicUrl: image.publicUrl,
+            hasBase64: !!image.base64Data,
+        });
         return '';
     }
 }
 
 export async function imagesToBase64(env: Env, images: ProcessedImageAttachment[]): Promise<string[]> {
-    return (await Promise.all(images.map(image => imageToBase64(env, image)))).filter((image) => image !== '');
+    if (!images || images.length === 0) {
+        return [];
+    }
+
+    const results = await Promise.all(images.map(image => imageToBase64(env, image)));
+    const validResults = results.filter((image) => image !== '');
+
+    // Log if some images failed to convert
+    const failedCount = images.length - validResults.length;
+    if (failedCount > 0) {
+        console.warn(`[imagesToBase64] ${failedCount} of ${images.length} images failed to convert to base64`);
+    }
+
+    return validResults;
 }
 
 export async function downloadR2Image(env: Env, r2Key: string) : Promise<ProcessedImageAttachment> {
