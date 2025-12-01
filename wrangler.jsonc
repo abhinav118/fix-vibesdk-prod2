@@ -152,7 +152,8 @@
         "CLOUDFLARE_AI_GATEWAY": "vibesdk-gateway",
         "MAX_SANDBOX_INSTANCES": "10",
         "SANDBOX_INSTANCE_TYPE": "standard-4",
-        "USE_CLOUDFLARE_IMAGES": "true"
+        "USE_CLOUDFLARE_IMAGES": "true",
+        "PEXELS_API_KEY": "J68xxxBXCpznLL8n0LaaUMxHIhHRKgmHdPOEqiE8PsKcy6uGpjHf5dDH"
     },
 	"workers_dev": false,
 	"preview_urls": false

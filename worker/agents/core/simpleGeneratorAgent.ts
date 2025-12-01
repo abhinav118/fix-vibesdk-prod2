@@ -52,6 +52,8 @@ import { StateMigration } from './stateMigration';
 import { generateNanoId } from 'worker/utils/idGenerator';
 import { updatePackageJson } from '../utils/packageSyncer';
 import { IdGenerator } from '../utils/idGenerator';
+import { PexelsImageService } from '../../services/pexels/PexelsImageService';
+import { processImagePlaceholders, countImagePlaceholders } from '../../utils/imageProcessor';
 
 interface Operations {
     regenerateFile: FileRegenerationOperation;
@@ -1285,7 +1287,7 @@ export class SimpleCodeGeneratorAgent extends Agent<Env, CodeGenState> {
         });
 
         // Await the already-created realtime code fixer promises
-        const finalFiles = await Promise.allSettled(result.fixedFilePromises).then((results: PromiseSettledResult<FileOutputType>[]) => {
+        let finalFiles = await Promise.allSettled(result.fixedFilePromises).then((results: PromiseSettledResult<FileOutputType>[]) => {
             return results.map((result) => {
                 if (result.status === 'fulfilled') {
                     return result.value;
@@ -1294,7 +1296,25 @@ export class SimpleCodeGeneratorAgent extends Agent<Env, CodeGenState> {
                 }
             }).filter((f): f is FileOutputType => f !== null);
         });
-    
+
+        // Process {IMAGE:keyword} placeholders with Pexels API
+        const pexelsApiKey = this.env.PEXELS_API_KEY;
+        if (pexelsApiKey) {
+            const filesToProcess = finalFiles.filter(f => countImagePlaceholders(f.fileContents) > 0);
+            if (filesToProcess.length > 0) {
+                this.logger().info(`Processing ${filesToProcess.length} files with image placeholders`);
+                const pexelsService = new PexelsImageService(pexelsApiKey);
+                finalFiles = await Promise.all(finalFiles.map(async (file) => {
+                    if (countImagePlaceholders(file.fileContents) > 0) {
+                        const processedContent = await processImagePlaceholders(file.fileContents, pexelsService);
+                        return { ...file, fileContents: processedContent };
+                    }
+                    return file;
+                }));
+                this.logger().info('Image placeholders processed successfully');
+            }
+        }
+
         // Update state with completed phase
         await this.fileManager.saveGeneratedFiles(finalFiles, `feat: ${phase.name}\n\n${phase.description}`);
 

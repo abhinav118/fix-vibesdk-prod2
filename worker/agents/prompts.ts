@@ -887,6 +887,7 @@ COMMON_PITFALLS: `<AVOID COMMON PITFALLS>
         **IF** you receive a TypeScript error "cannot be used as a JSX component" for a component \`<MyComponent />\`, **AND** the error says its type is \`'typeof import(...)'\`, then check if the import is correct (named vs default import).
         Applying this rule to your situation will fix both the type-check errors and the browser's runtime error.
 
+<<<<<<< Updated upstream
     # IMAGE URL GUIDELINES - CRITICAL FOR WORKING IMAGES
     **NEVER write image files (jpeg, png, svg, etc.)! Use ONLY these reliable external URLs:**
 
@@ -908,6 +909,26 @@ COMMON_PITFALLS: `<AVOID COMMON PITFALLS>
     • Cards/Thumbnails: 400x300 or 600x400
     • Avatars: 64, 96, or 128 (square)
     • Products: 600x600 (square)
+=======
+    # IMAGE URL GUIDELINES - USE PEXELS PLACEHOLDER SYNTAX
+    **NEVER write image files! Use placeholder syntax for contextual images:**
+
+    **CONTEXTUAL IMAGES (USE PLACEHOLDER SYNTAX):**
+    • Use \`{IMAGE:keyword}\` syntax - replaced with real Pexels URLs during build
+      - Real estate: \`{IMAGE:luxury mansion exterior}\`
+      - Food: \`{IMAGE:gourmet restaurant dish}\`
+      - Tech: \`{IMAGE:modern office workspace}\`
+      - E-commerce: \`{IMAGE:product photography}\`
+      - Nature: \`{IMAGE:mountain landscape sunset}\`
+    • **Random Placeholder Images:** Use \`{IMAGE:random}\` for generic placeholder images (curated high-quality photos)
+    • **User Avatars:** \`https://ui-avatars.com/api/?name=John+Doe&background=random&size=128\`
+    • **Avatar Icons:** \`https://api.dicebear.com/7.x/avataaars/svg?seed=user-123\`
+
+    **BROKEN - NEVER USE:**
+    • ❌ \`https://images.unsplash.com/photo-{id}\` - IDs are fabricated and BROKEN
+    • ❌ \`https://source.unsplash.com/...\` - OFFLINE since 2024
+    • ❌ \`https://picsum.photos/seed/{keyword}\` - Seeds are NOT keywords, returns random images!
+>>>>>>> Stashed changes
 
 </AVOID COMMON PITFALLS>`,
     COMMON_DEP_DOCUMENTATION: `<COMMON DEPENDENCY DOCUMENTATION>
