@@ -887,7 +887,6 @@ COMMON_PITFALLS: `<AVOID COMMON PITFALLS>
         **IF** you receive a TypeScript error "cannot be used as a JSX component" for a component \`<MyComponent />\`, **AND** the error says its type is \`'typeof import(...)'\`, then check if the import is correct (named vs default import).
         Applying this rule to your situation will fix both the type-check errors and the browser's runtime error.
 
-
     # IMAGE URL GUIDELINES - USE PEXELS PLACEHOLDER SYNTAX
     **NEVER write image files! Use placeholder syntax for contextual images:**
 
@@ -906,7 +905,6 @@ COMMON_PITFALLS: `<AVOID COMMON PITFALLS>
     • ❌ \`https://images.unsplash.com/photo-{id}\` - IDs are fabricated and BROKEN
     • ❌ \`https://source.unsplash.com/...\` - OFFLINE since 2024
     • ❌ \`https://picsum.photos/seed/{keyword}\` - Seeds are NOT keywords, returns random images!
-
 
 </AVOID COMMON PITFALLS>`,
     COMMON_DEP_DOCUMENTATION: `<COMMON DEPENDENCY DOCUMENTATION>

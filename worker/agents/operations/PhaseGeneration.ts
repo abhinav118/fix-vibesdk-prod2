@@ -44,15 +44,6 @@ const SYSTEM_PROMPT = `<ROLE>
     - Core config files are locked: package.json, tsconfig.json, wrangler.jsonc (already configured)
     - You may modify: tailwind.config.js, vite.config.js (if needed for styling/build)
     
-<<<<<<< Updated upstream
-    **Visual Assets - ONLY USE RELIABLE SERVICES:**
-    ✅ **Picsum (ALWAYS WORKS):** \`https://picsum.photos/seed/{name}/{width}/{height}\`
-       - Example: \`<img src="https://picsum.photos/seed/hero/1200/600" alt="Hero" />\`
-    ✅ **Avatars:** \`https://ui-avatars.com/api/?name={name}&size=128\` or \`https://api.dicebear.com/7.x/avataaars/svg?seed={id}\`
-    ✅ Canvas drawing: \`<canvas>\` element for shapes and patterns
-    ✅ Icon libraries: lucide-react, heroicons (from dependencies)
-    ❌ **BROKEN - NEVER USE:** \`images.unsplash.com/photo-{id}\`, \`source.unsplash.com\`
-=======
     **Visual Assets - USE PEXELS PLACEHOLDER SYNTAX:**
     ✅ **Contextual Images:** Use \`{IMAGE:keyword description}\` syntax - will be replaced with Pexels URLs
        - Example: \`<img src="{IMAGE:luxury mansion}" alt="Hero" />\`
@@ -62,7 +53,6 @@ const SYSTEM_PROMPT = `<ROLE>
     ✅ Canvas drawing: \`<canvas>\` element for shapes and patterns
     ✅ Icon libraries: lucide-react, heroicons (from dependencies)
     ❌ **BROKEN:** \`images.unsplash.com\`, \`source.unsplash.com\`, \`picsum.photos/seed/{keyword}\`
->>>>>>> Stashed changes
     ❌ Binary files (.png, .jpg, .svg files) cannot be generated in phases
 
     **REMEMBER: This is not a toy or educational project. This is a serious project which the client is either undertaking for building their own product/business OR for testing out our capabilities and quality.**
