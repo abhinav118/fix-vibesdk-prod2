@@ -71,8 +71,7 @@ export function createAssistantMessage(content: string) {
 }
 
 /**
- * Create a multi-modal user message with text and image content.
- * If no valid image URLs are provided, falls back to a text-only user message.
+ * Create a multi-modal user message with text and image content
  */
 export function createMultiModalUserMessage(
 	text: string,
@@ -80,21 +79,10 @@ export function createMultiModalUserMessage(
 	detail?: 'auto' | 'low' | 'high',
 ): {
 	role: MessageRole;
-	content: string | (TextContent | ImageContent)[];
+	content: (TextContent | ImageContent)[];
 } {
 	const urls = Array.isArray(imageUrls) ? imageUrls : [imageUrls];
-
-	// Filter out empty/invalid URLs
-	const validUrls = urls.filter(url => url && url.trim() !== '');
-
-	// If no valid images, return text-only message
-	if (validUrls.length === 0) {
-		return {
-			role: 'user' as MessageRole,
-			content: text,
-		};
-	}
-
+	
 	return {
 		role: 'user' as MessageRole,
 		content: [
@@ -102,7 +90,7 @@ export function createMultiModalUserMessage(
 				type: 'text',
 				text,
 			},
-			...validUrls.map(url => ({
+			...urls.map(url => ({
 				type: 'image_url' as const,
 				image_url: {
 					url,
