@@ -4,7 +4,7 @@
  * Tests if the worker is running and responding
  */
 
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8787';
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5173';
 
 console.log('🧪 Testing VibeSDK API connection...\n');
 console.log(`📡 API URL: ${API_BASE_URL}\n`);

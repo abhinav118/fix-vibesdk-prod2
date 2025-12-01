@@ -20,7 +20,7 @@ import type {
 } from './types';
 
 // Configuration
-const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8787';
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:5173';
 const AUTH_TOKEN = process.env.AUTH_TOKEN || '';
 const OUTPUT_DIR = process.env.OUTPUT_DIR || './output';
 
