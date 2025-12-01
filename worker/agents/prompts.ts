@@ -887,29 +887,7 @@ COMMON_PITFALLS: `<AVOID COMMON PITFALLS>
         **IF** you receive a TypeScript error "cannot be used as a JSX component" for a component \`<MyComponent />\`, **AND** the error says its type is \`'typeof import(...)'\`, then check if the import is correct (named vs default import).
         Applying this rule to your situation will fix both the type-check errors and the browser's runtime error.
 
-<<<<<<< Updated upstream
-    # IMAGE URL GUIDELINES - CRITICAL FOR WORKING IMAGES
-    **NEVER write image files (jpeg, png, svg, etc.)! Use ONLY these reliable external URLs:**
 
-    **RELIABLE SERVICES (ALWAYS WORK):**
-    • **Picsum Photos:** \`https://picsum.photos/seed/{name}/{width}/{height}\`
-      - Hero: \`https://picsum.photos/seed/hero-image/1200/600\`
-      - Card: \`https://picsum.photos/seed/card-1/400/300\`
-      - Product: \`https://picsum.photos/seed/product-shoe/600/600\`
-      - Grayscale: \`https://picsum.photos/seed/bg/800/600?grayscale\`
-    • **User Avatars:** \`https://ui-avatars.com/api/?name=John+Doe&background=random&size=128\`
-    • **Avatar Icons:** \`https://api.dicebear.com/7.x/avataaars/svg?seed=user-123\`
-
-    **BROKEN - NEVER USE THESE:**
-    • ❌ \`https://images.unsplash.com/photo-{id}\` - IDs are fabricated and BROKEN
-    • ❌ \`https://source.unsplash.com/...\` - Service is COMPLETELY OFFLINE since 2024
-
-    **IMAGE SIZING:**
-    • Hero/Banner: 1200x600 or 1920x1080
-    • Cards/Thumbnails: 400x300 or 600x400
-    • Avatars: 64, 96, or 128 (square)
-    • Products: 600x600 (square)
-=======
     # IMAGE URL GUIDELINES - USE PEXELS PLACEHOLDER SYNTAX
     **NEVER write image files! Use placeholder syntax for contextual images:**
 
@@ -928,7 +906,7 @@ COMMON_PITFALLS: `<AVOID COMMON PITFALLS>
     • ❌ \`https://images.unsplash.com/photo-{id}\` - IDs are fabricated and BROKEN
     • ❌ \`https://source.unsplash.com/...\` - OFFLINE since 2024
     • ❌ \`https://picsum.photos/seed/{keyword}\` - Seeds are NOT keywords, returns random images!
->>>>>>> Stashed changes
+
 
 </AVOID COMMON PITFALLS>`,
     COMMON_DEP_DOCUMENTATION: `<COMMON DEPENDENCY DOCUMENTATION>
