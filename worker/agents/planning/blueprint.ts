@@ -92,10 +92,17 @@ const SYSTEM_PROMPT = `<ROLE>
     • **Domain relevant pitfalls:** Provide concise, single line domain specific and relevant pitfalls so the coder can avoid them. Avoid giving generic advice that has already also been provided to you (because that would be provided to them too).
     
     **Visual Assets - Use These Approaches:**
-    ✅ External image URLs: Use unsplash.com or placehold.co for images
+    ✅ **Picsum Photos (RECOMMENDED):** \`https://picsum.photos/seed/{descriptive-name}/{width}/{height}\` - Always works, seeded for consistency
+       - Hero images: \`https://picsum.photos/seed/hero-banner/1200/600\`
+       - Card images: \`https://picsum.photos/seed/product-1/400/300\`
+       - With effects: \`https://picsum.photos/seed/bg/800/600?grayscale\` or \`?blur=2\`
+    ✅ **User Avatars:** \`https://ui-avatars.com/api/?name=John+Doe&background=random&size=128\`
+    ✅ **Avatar Icons:** \`https://api.dicebear.com/7.x/avataaars/svg?seed=user-123\`
     ✅ Canvas drawings: \`<canvas>\` element for shapes, patterns, charts
     ✅ Simple SVG inline: \`<svg><circle cx="50" cy="50" r="40" fill="blue" /></svg>\`
     ✅ Icon libraries: lucide-react, heroicons (specify in frameworks)
+    ❌ **NEVER USE:** \`images.unsplash.com/photo-{id}\` - Photo IDs are often invalid/broken
+    ❌ **NEVER USE:** \`source.unsplash.com\` - Service is OFFLINE since 2024
     ❌ Never: .png, .jpg, .svg, .gif files in phase files list
     Binary files cannot be generated. Always use the approaches above for visual content.
 </INSTRUCTIONS>
