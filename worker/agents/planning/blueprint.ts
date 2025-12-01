@@ -91,13 +91,6 @@ const SYSTEM_PROMPT = `<ROLE>
         - This provides a clear, verifiable test case for the core algorithm.
     • **Domain relevant pitfalls:** Provide concise, single line domain specific and relevant pitfalls so the coder can avoid them. Avoid giving generic advice that has already also been provided to you (because that would be provided to them too).
     
-<<<<<<< Updated upstream
-    **Visual Assets - Use These Approaches:**
-    ✅ **Picsum Photos (RECOMMENDED):** \`https://picsum.photos/seed/{descriptive-name}/{width}/{height}\` - Always works, seeded for consistency
-       - Hero images: \`https://picsum.photos/seed/hero-banner/1200/600\`
-       - Card images: \`https://picsum.photos/seed/product-1/400/300\`
-       - With effects: \`https://picsum.photos/seed/bg/800/600?grayscale\` or \`?blur=2\`
-=======
     **Visual Assets - CONTEXTUAL IMAGES WILL BE PROVIDED:**
     ✅ **Contextual Images:** Use placeholder syntax \`{IMAGE:keyword}\` where keyword describes the image needed
        - Hero: \`{IMAGE:luxury mansion exterior}\` or \`{IMAGE:modern office building}\`
@@ -105,7 +98,6 @@ const SYSTEM_PROMPT = `<ROLE>
        - Backgrounds: \`{IMAGE:abstract technology}\` or \`{IMAGE:nature landscape}\`
        - These will be replaced with real Pexels image URLs during generation
     ✅ **Random Placeholder Images:** Use \`{IMAGE:random}\` for generic placeholder images (curated high-quality photos)
->>>>>>> Stashed changes
     ✅ **User Avatars:** \`https://ui-avatars.com/api/?name=John+Doe&background=random&size=128\`
     ✅ **Avatar Icons:** \`https://api.dicebear.com/7.x/avataaars/svg?seed=user-123\`
     ✅ Canvas drawings: \`<canvas>\` element for shapes, patterns, charts
@@ -113,10 +105,7 @@ const SYSTEM_PROMPT = `<ROLE>
     ✅ Icon libraries: lucide-react, heroicons (specify in frameworks)
     ❌ **NEVER USE:** \`images.unsplash.com/photo-{id}\` - Photo IDs are often invalid/broken
     ❌ **NEVER USE:** \`source.unsplash.com\` - Service is OFFLINE since 2024
-<<<<<<< Updated upstream
-=======
     ❌ **NEVER USE:** \`picsum.photos/seed/{keyword}\` - Seeds are NOT keywords, returns random images!
->>>>>>> Stashed changes
     ❌ Never: .png, .jpg, .svg, .gif files in phase files list
     Binary files cannot be generated. Always use the approaches above for visual content.
 </INSTRUCTIONS>
